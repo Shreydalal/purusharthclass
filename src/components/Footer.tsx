@@ -72,25 +72,25 @@ const Footer = () => {
               <li className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 flex-shrink-0 mt-0.5 text-accent" />
                 <span className="text-sm text-primary-foreground/80">
-                  123, Education Street, Near City Center, Ahmedabad, Gujarat - 380001
+                  Sakuntala Upvan, Near Bapod Police Station, Waghodia Road, Vadodara
                 </span>
               </li>
               <li>
                 <a 
-                  href="tel:+919876543210"
+                  href="tel:+918200912189"
                   className="flex items-center gap-3 text-primary-foreground/80 hover:text-primary-foreground transition-colors"
                 >
                   <Phone className="h-5 w-5 text-accent" />
-                  <span className="text-sm">+91 98765 43210</span>
+                  <span className="text-sm">+91 82009 12189</span>
                 </a>
               </li>
               <li>
                 <a 
-                  href="mailto:info@purusharthclasses.com"
+                  href="mailto:purusharthclasses@gmail.com"
                   className="flex items-center gap-3 text-primary-foreground/80 hover:text-primary-foreground transition-colors"
                 >
                   <Mail className="h-5 w-5 text-accent" />
-                  <span className="text-sm">info@purusharthclasses.com</span>
+                  <span className="text-sm">purusharthclasses@gmail.com</span>
                 </a>
               </li>
             </ul>

@@ -16,19 +16,19 @@ const ContactSection = () => {
     {
       icon: MapPin,
       title: "Address",
-      content: "123, Education Street, Near City Center, Ahmedabad, Gujarat - 380001",
+      content: "Sakuntala Upvan, Near Bapod Police Station, Wagodhia Road, Vadodara",
     },
     {
       icon: Phone,
       title: "Phone",
-      content: "+91 98765 43210",
-      link: "tel:+919876543210",
+      content: "+91 82009 12189",
+      link: "tel:+918200912189",
     },
     {
       icon: Mail,
       title: "Email",
-      content: "info@purusharthclasses.com",
-      link: "mailto:info@purusharthclasses.com",
+      content: "purusharthclasses@gmail.com",
+      link: "mailto:purusharthclasses@gmail.com",
     },
     {
       icon: Clock,
@@ -46,7 +46,7 @@ const ContactSection = () => {
     setFormData({ name: "", phone: "", studentClass: "", message: "" });
   };
 
-  const whatsappNumber = "919876543210";
+  const whatsappNumber = "918200912189";
   const whatsappMessage = encodeURIComponent("Hello! I want to enquire about admission in Purusharth Classes.");
   const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
 
@@ -109,7 +109,7 @@ const ContactSection = () => {
             {/* Google Map */}
             <div className="rounded-xl overflow-hidden border border-border shadow-card h-64 md:h-80">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3671.9037851862695!2d72.55656231496753!3d23.022505384948!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e84ffc0b0f0f1%3A0x5d8d1ce3f7ba1d43!2sAhmedabad%2C%20Gujarat!5e0!3m2!1sen!2sin!4v1635000000000!5m2!1sen!2sin"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3691.5!2d73.15!3d22.31!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395fcf0d8e7e3b3d%3A0x0!2sBapod%20Police%20Station%2C%20Waghodia%20Road%2C%20Vadodara!5e0!3m2!1sen!2sin!4v1635000000000!5m2!1sen!2sin"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
