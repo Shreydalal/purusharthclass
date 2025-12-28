@@ -32,7 +32,7 @@ const Header = () => {
             <img 
               src={logo} 
               alt="Purusharth Classes Logo" 
-              className="h-12 md:h-14 w-auto object-contain"
+              className="h-12 md:h-14 w-auto object-contain mix-blend-multiply"
             />
             <div className="hidden sm:block">
               <h1 className="text-lg md:text-xl font-bold text-primary leading-tight">
