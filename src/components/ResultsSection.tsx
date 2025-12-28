@@ -1,5 +1,7 @@
-import { Award, ExternalLink } from "lucide-react";
+import { Award, ExternalLink, X } from "lucide-react";
 import { Button } from "./ui/button";
+import { Dialog, DialogContent, DialogClose } from "./ui/dialog";
+import { useState } from "react";
 import result1 from "@/assets/results/result-1.jpg";
 import result2 from "@/assets/results/result-2.jpg";
 import result3 from "@/assets/results/result-3.jpg";
@@ -31,6 +33,8 @@ const mockResults = [
 ];
 
 const ResultsSection = () => {
+  const [selectedImage, setSelectedImage] = useState<{ url: string; title: string } | null>(null);
+  
   // In production, this would fetch from an API endpoint
   // const { data: results } = useQuery(['results'], fetchResults);
   const results = mockResults;
@@ -63,7 +67,8 @@ const ResultsSection = () => {
           {results.map((result) => (
             <div 
               key={result.id}
-              className="group bg-card rounded-2xl shadow-card hover:shadow-hover transition-all duration-300 overflow-hidden border border-border"
+              onClick={() => setSelectedImage({ url: result.imageUrl, title: result.title })}
+              className="group bg-card rounded-2xl shadow-card hover:shadow-hover transition-all duration-300 overflow-hidden border border-border cursor-pointer"
             >
               {/* Image */}
               <div className="relative h-48 overflow-hidden">
@@ -120,6 +125,27 @@ const ResultsSection = () => {
           </div>
         </div>
       </div>
+
+      {/* Image Popup Dialog */}
+      <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
+        <DialogContent className="max-w-4xl w-[95vw] p-0 bg-background border-border">
+          <DialogClose className="absolute right-3 top-3 z-10 rounded-full bg-background/80 p-2 hover:bg-background transition-colors">
+            <X className="h-5 w-5" />
+          </DialogClose>
+          {selectedImage && (
+            <div className="flex flex-col">
+              <img 
+                src={selectedImage.url} 
+                alt={selectedImage.title}
+                className="w-full max-h-[80vh] object-contain"
+              />
+              <div className="p-4 border-t border-border">
+                <h3 className="font-semibold text-foreground text-lg">{selectedImage.title}</h3>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </section>
   );
 };
