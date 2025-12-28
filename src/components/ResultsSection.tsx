@@ -11,7 +11,7 @@ import result4 from "@/assets/results/result-4.jpg";
 // For now, using placeholder data structure
 const mockResults = [{
   id: 1,
-  title: "ધોરણ ૯ પ્રથમ પરીક્ષા પરીક્ષામાં ગણિત વિષયમાં 50/50 ગુણ",
+  title: "ધોરણ ૯ - ગણિત વિષયમાં 50/50 ગુણ",
   imageUrl: result1
 }, {
   id: 2,
