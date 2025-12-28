@@ -1,23 +1,32 @@
 import { Award, ExternalLink } from "lucide-react";
 import { Button } from "./ui/button";
+import result1 from "@/assets/results/result-1.jpg";
+import result2 from "@/assets/results/result-2.jpg";
+import result3 from "@/assets/results/result-3.jpg";
+import result4 from "@/assets/results/result-4.jpg";
 
 // This data will eventually come from a backend API
 // For now, using placeholder data structure
 const mockResults = [
   {
     id: 1,
-    title: "Board Results 2024 – 100% Pass",
-    imageUrl: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600&h=400&fit=crop",
+    title: "ધોરણ ૯ - ગણિત વિષયમાં 50/50 ગુણ",
+    imageUrl: result1,
   },
   {
     id: 2,
-    title: "Toppers 2024 – A1 Grade Students",
-    imageUrl: "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=600&h=400&fit=crop",
+    title: "ધોરણ ૯ - પ્રથમ નંબર વિદ્યાર્થીઓ",
+    imageUrl: result2,
   },
   {
     id: 3,
-    title: "Board Results 2023 – Outstanding Performance",
-    imageUrl: "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=600&h=400&fit=crop",
+    title: "માર્ચ 2024 બોર્ડ પરિણામ",
+    imageUrl: result3,
+  },
+  {
+    id: 4,
+    title: "માર્ચ 2025 SSC Board - 100% પરિણામ",
+    imageUrl: result4,
   },
 ];
 
@@ -50,7 +59,7 @@ const ResultsSection = () => {
         </div>
 
         {/* Results Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto mb-12">
+        <div className="grid md:grid-cols-2 gap-6 md:gap-8 max-w-5xl mx-auto mb-12">
           {results.map((result) => (
             <div 
               key={result.id}
