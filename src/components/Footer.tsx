@@ -46,7 +46,7 @@ const Footer = () => {
             <div className="flex items-center gap-4 text-sm text-primary-foreground/70">
               <span>© {currentYear} Purusharth Classes</span>
               <span>•</span>
-              <span>© 2025 Purusharth Class</span>
+              <span>All Rights Reserved</span>
             </div>
           </div>
 
