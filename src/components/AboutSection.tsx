@@ -48,16 +48,16 @@ const AboutSection = () => {
         {/* Stats */}
         <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
           {[{
-          value: "10+",
+          value: "30+",
           label: "Years Experience"
         }, {
-          value: "1000+",
+          value: "3000+",
           label: "Students Taught"
         }, {
-          value: "95%+",
+          value: "99.5%+",
           label: "Pass Rate"
         }, {
-          value: "50+",
+          value: "150+",
           label: "Toppers"
         }].map((stat, index) => <div key={index} className="text-center p-4">
               <div className="text-3xl md:text-4xl font-bold text-primary mb-2">{stat.value}</div>
