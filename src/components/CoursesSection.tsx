@@ -7,7 +7,7 @@ const CoursesSection = () => {
       grade: "9th Standard",
       gradeGujarati: "ધોરણ 9",
       medium: "Gujarati Medium",
-      subjects: ["Mathematics", "Science", "Social Science", "Gujarati", "English", "Sanskrit/Hindi"],
+      subjects: ["Mathematics", "Science", "Social Science", "Gujarati", "English", "Sanskrit"],
       features: [
         "Foundation building for Board exams",
         "Regular tests and assessments",
@@ -19,7 +19,7 @@ const CoursesSection = () => {
       grade: "10th Standard",
       gradeGujarati: "ધોરણ 10",
       medium: "Gujarati Medium",
-      subjects: ["Mathematics", "Science", "Social Science", "Gujarati", "English", "Sanskrit/Hindi"],
+      subjects: ["Mathematics", "Science", "Social Science", "Gujarati", "English", "Sanskrit"],
       features: [
         "Board exam focused preparation",
         "Previous year paper practice",
