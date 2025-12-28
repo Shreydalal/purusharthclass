@@ -43,9 +43,7 @@ const HeroSection = () => {
           {/* Main Heading */}
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground leading-tight mb-6 animate-fade-in" style={{
           animationDelay: "0.1s"
-        }}>
-            Purusharth Classes
-          </h1>
+        }}>પુરુષાર્થ ક્લાસ</h1>
           
           <h2 className="text-xl md:text-2xl lg:text-3xl font-medium text-primary-foreground/90 mb-6 animate-fade-in" style={{
           animationDelay: "0.2s"
