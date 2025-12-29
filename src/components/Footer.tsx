@@ -32,7 +32,7 @@ const Footer = () => {
           {/* Logo & Description */}
           <div className="lg:col-span-2">
             <div className="flex items-center gap-3 mb-4">
-              <img src={logo} alt="Purusharth Classes" className="h-14 w-auto object-contain bg-primary-foreground rounded-lg p-1" />
+              <img src={logo} alt="Purusharth Class" className="h-14 w-auto object-contain bg-primary-foreground rounded-lg p-1" />
               <div>
                 <h3 className="text-xl font-bold">Purusharth Class</h3>
                 <p className="text-sm text-primary-foreground/70">Excellence in Education</p>
@@ -44,9 +44,7 @@ const Footer = () => {
               personal attention.
             </p>
             <div className="flex items-center gap-4 text-sm text-primary-foreground/70">
-              <span>© {currentYear} Purusharth Classes</span>
-              <span>•</span>
-              <span>© 2025 Purusharth Class</span>
+              <span>© {currentYear} Purusharth Class</span>
             </div>
           </div>
 
