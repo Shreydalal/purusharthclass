@@ -48,10 +48,10 @@ const Results = () => {
   return (
     <>
       <Helmet>
-        <title>Results | Purusharth Classes - Our Achievements</title>
+        <title>Results | Purusharth Class - Our Achievements</title>
         <meta 
           name="description" 
-          content="View the outstanding board exam results and achievements of Purusharth Classes students. 95%+ pass rate with consistent toppers every year." 
+          content="View the outstanding board exam results and achievements of Purusharth Class students. 95%+ pass rate with consistent toppers every year." 
         />
       </Helmet>
       
@@ -124,7 +124,7 @@ const Results = () => {
         {/* Footer */}
         <footer className="bg-muted py-8 text-center">
           <p className="text-muted-foreground">
-            © {new Date().getFullYear()} Purusharth Classes. All Rights Reserved.
+            © {new Date().getFullYear()} Purusharth Class. All Rights Reserved.
           </p>
         </footer>
       </div>

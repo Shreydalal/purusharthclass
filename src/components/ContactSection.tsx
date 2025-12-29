@@ -47,7 +47,7 @@ const ContactSection = () => {
   };
 
   const whatsappNumber = "918200912189";
-  const whatsappMessage = encodeURIComponent("Hello! I want to enquire about admission in Purusharth Classes.");
+  const whatsappMessage = encodeURIComponent("Hello! I want to enquire about admission in Purusharth Class.");
   const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
 
   return (
@@ -116,7 +116,7 @@ const ContactSection = () => {
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                title="Purusharth Classes Location"
+                title="Purusharth Class Location"
               />
             </div>
           </div>

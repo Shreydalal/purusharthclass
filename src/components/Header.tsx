@@ -35,7 +35,7 @@ const Header = () => {
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3">
-            <img src={logo} alt="Purusharth Classes Logo" className="h-12 md:h-14 w-auto object-contain mix-blend-multiply" />
+            <img src={logo} alt="Purusharth Class Logo" className="h-12 md:h-14 w-auto object-contain mix-blend-multiply" />
             <div className="hidden sm:block">
               <h1 className="text-lg md:text-xl font-bold text-primary leading-tight">Purusharth Class</h1>
               <p className="text-xs text-muted-foreground">Excellence in Education</p>

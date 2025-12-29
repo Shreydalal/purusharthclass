@@ -11,11 +11,11 @@ import result4 from "@/assets/results/result-4.jpg";
 // For now, using placeholder data structure
 const mockResults = [{
   id: 1,
-  title: "ધોરણ ૯ પ્રથમ પરીક્ષા પરીક્ષામાં ગણિત વિષયમાં 50/50 ગુણ",
+  title: "ધોરણ ૯ પ્રથમ પરીક્ષામાં ગણિત વિષયમાં 50/50 ગુણ લાવનાર વિદ્યાર્થીઓ",
   imageUrl: result1
 }, {
   id: 2,
-  title: "ધોરણ ૯ - પ્રથમ નંબર વિદ્યાર્થીઓ",
+  title: "ધોરણ ૯ પ્રથમ પરીક્ષામાં પ્રથમ નંબર લાવનાર વિદ્યાર્થીઓ",
   imageUrl: result2
 }, {
   id: 3,
