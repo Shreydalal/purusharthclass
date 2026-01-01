@@ -22,13 +22,28 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { auth, db, storage } from "@/lib/firebase";
+import { 
+  collection, 
+  getDocs, 
+  addDoc, 
+  updateDoc, 
+  deleteDoc, 
+  doc, 
+  query, 
+  orderBy,
+  Timestamp
+} from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 
 interface Result {
   id: string;
   title: string;
   imageUrl: string;
   isPinned: boolean;
-  createdAt: string;
+  createdAt: Date;
+  storagePath?: string;
 }
 
 const AdminDashboard = () => {
@@ -44,37 +59,33 @@ const AdminDashboard = () => {
 
   // Check authentication
   useEffect(() => {
-    const token = localStorage.getItem("adminToken");
-    if (!token) {
-      navigate("/admin-login");
-      return;
-    }
-    fetchResults();
-  }, [navigate]);
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        navigate("/admin-login");
+        return;
+      }
+      fetchResults();
+    });
 
-  const getAuthHeaders = () => ({
-    "Content-Type": "application/json",
-    "Authorization": `Bearer ${localStorage.getItem("adminToken")}`,
-  });
+    return () => unsubscribe();
+  }, [navigate]);
 
   const fetchResults = async () => {
     try {
-      // TODO: Replace with your backend API endpoint
-      const response = await fetch("/api/admin/results", {
-        headers: getAuthHeaders(),
-      });
-      
-      if (!response.ok) {
-        if (response.status === 401) {
-          localStorage.removeItem("adminToken");
-          navigate("/admin-login");
-          return;
-        }
-        throw new Error("Failed to fetch results");
-      }
-
-      const data = await response.json();
-      setResults(data.results || []);
+      const resultsQuery = query(
+        collection(db, "results"),
+        orderBy("createdAt", "desc")
+      );
+      const snapshot = await getDocs(resultsQuery);
+      const resultsData: Result[] = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        title: doc.data().title,
+        imageUrl: doc.data().imageUrl,
+        isPinned: doc.data().isPinned || false,
+        createdAt: doc.data().createdAt?.toDate() || new Date(),
+        storagePath: doc.data().storagePath,
+      }));
+      setResults(resultsData);
     } catch (error) {
       toast({
         title: "Error",
@@ -89,6 +100,15 @@ const AdminDashboard = () => {
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Validate file type
+      if (!file.type.match(/^image\/(jpeg|png)$/)) {
+        toast({
+          title: "Invalid File Type",
+          description: "Only JPEG and PNG images are allowed",
+          variant: "destructive",
+        });
+        return;
+      }
       setSelectedFile(file);
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
@@ -109,36 +129,48 @@ const AdminDashboard = () => {
     setIsUploading(true);
 
     try {
-      const formData = new FormData();
-      formData.append("image", selectedFile);
-      formData.append("title", newTitle);
+      // Generate unique filename
+      const uniqueId = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+      const extension = selectedFile.name.split('.').pop();
+      const storagePath = `results/${uniqueId}.${extension}`;
+      
+      // Upload to Firebase Storage
+      const storageRef = ref(storage, storagePath);
+      await uploadBytes(storageRef, selectedFile);
+      const imageUrl = await getDownloadURL(storageRef);
 
-      // TODO: Replace with your backend API endpoint
-      const response = await fetch("/api/admin/results/upload", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${localStorage.getItem("adminToken")}`,
-        },
-        body: formData,
+      // Save to Firestore
+      const docRef = await addDoc(collection(db, "results"), {
+        title: newTitle.trim(),
+        imageUrl,
+        storagePath,
+        isPinned: false,
+        createdAt: Timestamp.now(),
       });
-
-      if (!response.ok) {
-        throw new Error("Failed to upload");
-      }
 
       toast({
         title: "Success",
         description: "Result uploaded successfully",
       });
 
+      // Add to local state
+      setResults([
+        {
+          id: docRef.id,
+          title: newTitle.trim(),
+          imageUrl,
+          isPinned: false,
+          createdAt: new Date(),
+          storagePath,
+        },
+        ...results,
+      ]);
+
       // Reset form
       setNewTitle("");
       setSelectedFile(null);
       setPreviewUrl(null);
       setIsDialogOpen(false);
-      
-      // Refresh results
-      fetchResults();
     } catch (error) {
       toast({
         title: "Error",
@@ -163,16 +195,8 @@ const AdminDashboard = () => {
     }
 
     try {
-      // TODO: Replace with your backend API endpoint
-      const response = await fetch(`/api/admin/results/${resultId}/pin`, {
-        method: "PATCH",
-        headers: getAuthHeaders(),
-        body: JSON.stringify({ isPinned: !currentlyPinned }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to update pin status");
-      }
+      const resultRef = doc(db, "results", resultId);
+      await updateDoc(resultRef, { isPinned: !currentlyPinned });
 
       setResults(results.map(r => 
         r.id === resultId ? { ...r, isPinned: !currentlyPinned } : r
@@ -197,15 +221,18 @@ const AdminDashboard = () => {
     }
 
     try {
-      // TODO: Replace with your backend API endpoint
-      const response = await fetch(`/api/admin/results/${resultId}`, {
-        method: "DELETE",
-        headers: getAuthHeaders(),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to delete");
+      const result = results.find(r => r.id === resultId);
+      
+      // Delete from Storage if storagePath exists
+      if (result?.storagePath) {
+        const storageRef = ref(storage, result.storagePath);
+        await deleteObject(storageRef).catch(() => {
+          // Ignore storage deletion errors (file might not exist)
+        });
       }
+
+      // Delete from Firestore
+      await deleteDoc(doc(db, "results", resultId));
 
       setResults(results.filter(r => r.id !== resultId));
 
@@ -222,13 +249,21 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("adminToken");
-    navigate("/admin-login");
-    toast({
-      title: "Logged Out",
-      description: "You have been logged out successfully",
-    });
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigate("/admin-login");
+      toast({
+        title: "Logged Out",
+        description: "You have been logged out successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to log out",
+        variant: "destructive",
+      });
+    }
   };
 
   const pinnedCount = results.filter(r => r.isPinned).length;
@@ -285,7 +320,7 @@ const AdminDashboard = () => {
                 <form onSubmit={handleUpload} className="space-y-6 mt-4">
                   {/* Image Upload */}
                   <div className="space-y-2">
-                    <Label>Result Image</Label>
+                    <Label>Result Image (JPEG/PNG only)</Label>
                     <div className="border-2 border-dashed border-border rounded-lg p-6 text-center">
                       {previewUrl ? (
                         <div className="space-y-4">
@@ -314,7 +349,7 @@ const AdminDashboard = () => {
                           </span>
                           <input
                             type="file"
-                            accept="image/*"
+                            accept="image/jpeg,image/png"
                             onChange={handleFileSelect}
                             className="hidden"
                           />

@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
+import { db } from "@/lib/firebase";
+import { collection, getDocs, query, orderBy, where } from "firebase/firestore";
 
 export interface Result {
   id: string;
   title: string;
   imageUrl: string;
   isPinned: boolean;
-  createdAt: string;
+  createdAt: Date;
 }
 
 interface UseResultsOptions {
@@ -20,20 +22,33 @@ export const useResults = (options: UseResultsOptions = {}) => {
   useEffect(() => {
     const fetchResults = async () => {
       try {
-        // TODO: Replace with your backend API endpoint
-        const endpoint = options.pinnedOnly 
-          ? "/api/results/pinned" 
-          : "/api/results";
+        let resultsQuery;
         
-        const response = await fetch(endpoint);
-        
-        if (!response.ok) {
-          throw new Error("Failed to fetch results");
+        if (options.pinnedOnly) {
+          resultsQuery = query(
+            collection(db, "results"),
+            where("isPinned", "==", true),
+            orderBy("createdAt", "desc")
+          );
+        } else {
+          resultsQuery = query(
+            collection(db, "results"),
+            orderBy("createdAt", "desc")
+          );
         }
-
-        const data = await response.json();
-        setResults(data.results || []);
+        
+        const snapshot = await getDocs(resultsQuery);
+        const resultsData: Result[] = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          title: doc.data().title,
+          imageUrl: doc.data().imageUrl,
+          isPinned: doc.data().isPinned || false,
+          createdAt: doc.data().createdAt?.toDate() || new Date(),
+        }));
+        
+        setResults(resultsData);
       } catch (err) {
+        console.error("Error fetching results:", err);
         setError(err instanceof Error ? err.message : "Failed to load results");
       } finally {
         setIsLoading(false);
