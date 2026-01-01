@@ -1,46 +1,22 @@
-import { Award, ExternalLink, X } from "lucide-react";
+import { Award, ExternalLink, X, Loader2, AlertCircle } from "lucide-react";
 import { Button } from "./ui/button";
 import { Dialog, DialogContent, DialogClose } from "./ui/dialog";
 import { useState } from "react";
-import result1 from "@/assets/results/result-1.jpg";
-import result2 from "@/assets/results/result-2.jpg";
-import result3 from "@/assets/results/result-3.jpg";
-import result4 from "@/assets/results/result-4.jpg";
+import { useResults } from "@/hooks/useResults";
 
-// This data will eventually come from a backend API
-// For now, using placeholder data structure
-const mockResults = [{
-  id: 1,
-  title: "ધોરણ ૯ પ્રથમ પરીક્ષામાં ગણિત વિષયમાં 50/50 ગુણ લાવનાર વિદ્યાર્થીઓ",
-  imageUrl: result1
-}, {
-  id: 2,
-  title: "ધોરણ ૯ પ્રથમ પરીક્ષામાં પ્રથમ નંબર લાવનાર વિદ્યાર્થીઓ",
-  imageUrl: result2
-}, {
-  id: 3,
-  title: "માર્ચ 2024 બોર્ડ પરિણામ",
-  imageUrl: result3
-}, {
-  id: 4,
-  title: "માર્ચ 2025 SSC Board - 100% પરિણામ",
-  imageUrl: result4
-}];
 const ResultsSection = () => {
+  const { results, isLoading, error } = useResults({ pinnedOnly: true });
   const [selectedImage, setSelectedImage] = useState<{
     url: string;
     title: string;
   } | null>(null);
 
-  // In production, this would fetch from an API endpoint
-  // const { data: results } = useQuery(['results'], fetchResults);
-  const results = mockResults;
   const handleViewAll = () => {
-    // This would redirect to a backend-managed results page
-    // For now, scrolling to show intent
     window.open("/results", "_blank");
   };
-  return <section id="results" className="py-20 md:py-28 bg-background">
+
+  return (
+    <section id="results" className="py-20 md:py-28 bg-background">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
@@ -55,31 +31,60 @@ const ResultsSection = () => {
         </div>
 
         {/* Results Grid */}
-        <div className="grid md:grid-cols-2 gap-6 md:gap-8 max-w-5xl mx-auto mb-12">
-          {results.map(result => <div key={result.id} onClick={() => setSelectedImage({
-          url: result.imageUrl,
-          title: result.title
-        })} className="group bg-card rounded-2xl shadow-card hover:shadow-hover transition-all duration-300 overflow-hidden border border-border cursor-pointer">
-              {/* Image */}
-              <div className="relative h-48 overflow-hidden">
-                <img src={result.imageUrl} alt={result.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 to-transparent" />
-                <div className="absolute bottom-4 left-4 right-4">
-                  <div className="flex items-center gap-2 text-primary-foreground">
-                    <Award className="h-5 w-5 text-accent" />
-                    <span className="font-medium">Achievement</span>
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center py-16">
+            <Loader2 className="h-10 w-10 animate-spin text-primary mb-4" />
+            <p className="text-muted-foreground">Loading results...</p>
+          </div>
+        ) : error ? (
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <AlertCircle className="h-12 w-12 text-destructive mb-4" />
+            <h3 className="text-lg font-semibold text-foreground mb-2">Failed to Load Results</h3>
+            <p className="text-muted-foreground">{error}</p>
+          </div>
+        ) : results.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <Award className="h-12 w-12 text-muted-foreground mb-4" />
+            <h3 className="text-lg font-semibold text-foreground mb-2">No Results Yet</h3>
+            <p className="text-muted-foreground">Check back soon for our latest achievements!</p>
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 gap-6 md:gap-8 max-w-5xl mx-auto mb-12">
+            {results.slice(0, 4).map(result => (
+              <div 
+                key={result.id} 
+                onClick={() => setSelectedImage({
+                  url: result.imageUrl,
+                  title: result.title
+                })} 
+                className="group bg-card rounded-2xl shadow-card hover:shadow-hover transition-all duration-300 overflow-hidden border border-border cursor-pointer"
+              >
+                {/* Image */}
+                <div className="relative h-48 overflow-hidden">
+                  <img 
+                    src={result.imageUrl} 
+                    alt={result.title} 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 to-transparent" />
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <div className="flex items-center gap-2 text-primary-foreground">
+                      <Award className="h-5 w-5 text-accent" />
+                      <span className="font-medium">Achievement</span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Content */}
-              <div className="p-5">
-                <h3 className="font-semibold text-foreground text-lg leading-tight">
-                  {result.title}
-                </h3>
+                {/* Content */}
+                <div className="p-5">
+                  <h3 className="font-semibold text-foreground text-lg leading-tight">
+                    {result.title}
+                  </h3>
+                </div>
               </div>
-            </div>)}
-        </div>
+            ))}
+          </div>
+        )}
 
         {/* View All Button */}
         <div className="text-center">
@@ -110,14 +115,22 @@ const ResultsSection = () => {
           <DialogClose className="absolute right-3 top-3 z-10 rounded-full bg-background/80 p-2 hover:bg-background transition-colors">
             <X className="h-5 w-5" />
           </DialogClose>
-          {selectedImage && <div className="flex flex-col">
-              <img src={selectedImage.url} alt={selectedImage.title} className="w-full max-h-[80vh] object-contain" />
+          {selectedImage && (
+            <div className="flex flex-col">
+              <img 
+                src={selectedImage.url} 
+                alt={selectedImage.title} 
+                className="w-full max-h-[80vh] object-contain" 
+              />
               <div className="p-4 border-t border-border">
                 <h3 className="font-semibold text-foreground text-lg">{selectedImage.title}</h3>
               </div>
-            </div>}
+            </div>
+          )}
         </DialogContent>
       </Dialog>
-    </section>;
+    </section>
+  );
 };
+
 export default ResultsSection;
