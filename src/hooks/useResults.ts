@@ -38,13 +38,21 @@ export const useResults = (options: UseResultsOptions = {}) => {
         }
         
         const snapshot = await getDocs(resultsQuery);
-        const resultsData: Result[] = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          title: doc.data().title,
-          imageUrl: doc.data().imageUrl,
-          isPinned: doc.data().isPinned || false,
-          createdAt: doc.data().createdAt?.toDate() || new Date(),
-        }));
+        const resultsData: Result[] = snapshot.docs.map((doc) => {
+          const data = doc.data() as {
+            title: string;
+            imageUrl: string;
+            isPinned?: boolean;
+            createdAt?: { toDate: () => Date };
+          };
+          return {
+            id: doc.id,
+            title: data.title,
+            imageUrl: data.imageUrl,
+            isPinned: data.isPinned || false,
+            createdAt: data.createdAt?.toDate() || new Date(),
+          };
+        });
         
         setResults(resultsData);
       } catch (err) {

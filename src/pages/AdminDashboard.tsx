@@ -23,7 +23,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import { auth, db, storage } from "@/lib/firebase";
+import { auth, db } from "@/lib/firebase";
 import { 
   collection, 
   getDocs, 
@@ -35,7 +35,11 @@ import {
   orderBy,
   Timestamp
 } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
+
+// Cloudinary configuration
+const CLOUDINARY_CLOUD_NAME = "dvgn6vrm0";
+const CLOUDINARY_UPLOAD_PRESET = "results_upload";
+const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
 
 interface Result {
   id: string;
@@ -43,7 +47,6 @@ interface Result {
   imageUrl: string;
   isPinned: boolean;
   createdAt: Date;
-  storagePath?: string;
 }
 
 const AdminDashboard = () => {
@@ -129,21 +132,28 @@ const AdminDashboard = () => {
     setIsUploading(true);
 
     try {
-      // Generate unique filename
-      const uniqueId = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-      const extension = selectedFile.name.split('.').pop();
-      const storagePath = `results/${uniqueId}.${extension}`;
-      
-      // Upload to Firebase Storage
-      const storageRef = ref(storage, storagePath);
-      await uploadBytes(storageRef, selectedFile);
-      const imageUrl = await getDownloadURL(storageRef);
+      // Upload to Cloudinary via REST API
+      const formData = new FormData();
+      formData.append("file", selectedFile);
+      formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+      formData.append("folder", "results");
+
+      const cloudinaryResponse = await fetch(CLOUDINARY_UPLOAD_URL, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!cloudinaryResponse.ok) {
+        throw new Error("Failed to upload image to Cloudinary");
+      }
+
+      const cloudinaryData = await cloudinaryResponse.json();
+      const imageUrl = cloudinaryData.secure_url;
 
       // Save to Firestore
       const docRef = await addDoc(collection(db, "results"), {
         title: newTitle.trim(),
         imageUrl,
-        storagePath,
         isPinned: false,
         createdAt: Timestamp.now(),
       });
@@ -161,7 +171,6 @@ const AdminDashboard = () => {
           imageUrl,
           isPinned: false,
           createdAt: new Date(),
-          storagePath,
         },
         ...results,
       ]);
@@ -172,9 +181,10 @@ const AdminDashboard = () => {
       setPreviewUrl(null);
       setIsDialogOpen(false);
     } catch (error) {
+      console.error("Upload error:", error);
       toast({
-        title: "Error",
-        description: "Failed to upload result",
+        title: "Upload Failed",
+        description: error instanceof Error ? error.message : "Failed to upload result",
         variant: "destructive",
       });
     } finally {
@@ -221,17 +231,7 @@ const AdminDashboard = () => {
     }
 
     try {
-      const result = results.find(r => r.id === resultId);
-      
-      // Delete from Storage if storagePath exists
-      if (result?.storagePath) {
-        const storageRef = ref(storage, result.storagePath);
-        await deleteObject(storageRef).catch(() => {
-          // Ignore storage deletion errors (file might not exist)
-        });
-      }
-
-      // Delete from Firestore
+      // Delete from Firestore only (Cloudinary images remain but won't be referenced)
       await deleteDoc(doc(db, "results", resultId));
 
       setResults(results.filter(r => r.id !== resultId));

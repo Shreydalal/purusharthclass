@@ -1,4 +1,4 @@
-# Firebase Setup Guide for Purusharth Class
+# Firebase + Cloudinary Setup Guide for Purusharth Class
 
 ## Step 1: Create Firebase Project
 
@@ -39,19 +39,7 @@
 
 ---
 
-## Step 4: Enable Storage
-
-1. Go to **Build > Storage**
-2. Click **Get started**
-3. Choose **Start in production mode**
-4. Click **Next** and select the same location as Firestore
-5. Click **Done**
-
----
-
-## Step 5: Configure Security Rules
-
-### Firestore Security Rules
+## Step 4: Configure Firestore Security Rules
 
 Go to **Firestore Database > Rules** and replace with:
 
@@ -64,9 +52,11 @@ service cloud.firestore {
       // Anyone can read results (for public display)
       allow read: if true;
       
-      // Only authenticated users can create, update, delete
+      // Only authenticated users can create and update
       allow create: if request.auth != null;
       allow update: if request.auth != null;
+      
+      // No delete allowed (images hosted on Cloudinary cannot be deleted from frontend)
       allow delete: if request.auth != null;
     }
     
@@ -80,37 +70,16 @@ service cloud.firestore {
 
 Click **Publish** to save.
 
-### Storage Security Rules
+---
 
-Go to **Storage > Rules** and replace with:
+## Step 5: Cloudinary Configuration (Already Done)
 
-```javascript
-rules_version = '2';
-service firebase.storage {
-  match /b/{bucket}/o {
-    // Results folder
-    match /results/{fileName} {
-      // Anyone can read (for public image display)
-      allow read: if true;
-      
-      // Only authenticated users can upload
-      allow write: if request.auth != null
-                   && request.resource.size < 5 * 1024 * 1024 // Max 5MB
-                   && request.resource.contentType.matches('image/(jpeg|png)'); // Only JPEG/PNG
-      
-      // Only authenticated users can delete
-      allow delete: if request.auth != null;
-    }
-    
-    // Deny access to all other paths
-    match /{allPaths=**} {
-      allow read, write: if false;
-    }
-  }
-}
-```
+Image uploads use Cloudinary with these settings:
+- **Cloud name:** `dvgn6vrm0`
+- **Upload preset:** `results_upload`
+- **Folder:** `results`
 
-Click **Publish** to save.
+No additional configuration needed - unsigned uploads are enabled.
 
 ---
 
@@ -162,11 +131,11 @@ For the pinned results query to work, you need to create a composite index:
 
 | Feature | Configuration |
 |---------|---------------|
-| Auth | Email/Password only |
+| Auth | Email/Password only (Firebase) |
 | Admin | Single user account |
-| Storage | JPEG/PNG only, max 5MB |
-| Firestore | Public read, admin write |
-| Security | Firebase rules (not frontend logic) |
+| Image Storage | Cloudinary (unsigned upload) |
+| Metadata Storage | Firestore (public read, admin write) |
+| Security | Firebase rules + Cloudinary preset |
 
 ---
 
