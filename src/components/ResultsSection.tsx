@@ -12,7 +12,7 @@ const ResultsSection = () => {
   } | null>(null);
 
   const handleViewAll = () => {
-    window.open("/results", "_blank");
+    window.open("/#/results", "_blank");
   };
 
   return (
