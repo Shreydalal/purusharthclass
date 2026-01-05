@@ -109,7 +109,7 @@ const ContactSection = () => {
             {/* Google Map */}
             <div className="rounded-xl overflow-hidden border border-border shadow-card h-64 md:h-80">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3691.5660644927727!2d73.20551087507825!3d22.30004057967204!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395fc90b403c14c9%3A0x1fe96ea84a6ac152!2sPurusharth%20Classes!5e0!3m2!1sen!2sin!4v1736100000000!5m2!1sen!2sin"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3687.715862377649!2d73.2365852!3d22.3049789!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395fc57d630b893f%3A0xfab81c50352aea34!2sPurusharth%20Class!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
