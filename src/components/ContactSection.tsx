@@ -109,7 +109,7 @@ const ContactSection = () => {
             {/* Google Map */}
             <div className="rounded-xl overflow-hidden border border-border shadow-card h-64 md:h-80">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3691.123!2d73.2089!3d22.3217!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395fcf5dc00a52e5%3A0x6f3c3b9f1a2b3c4d!2sSakuntala%20Upvan%2C%20Waghodia%20Rd%2C%20Vadodara%2C%20Gujarat!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3691.5660644927727!2d73.20551087507825!3d22.30004057967204!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395fc90b403c14c9%3A0x1fe96ea84a6ac152!2sPurusharth%20Classes!5e0!3m2!1sen!2sin!4v1736100000000!5m2!1sen!2sin"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
